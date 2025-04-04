@@ -1,0 +1,67 @@
+{% extends 'base/base.html' %}
+
+{% block title %}My Tests - DebugMe{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>My Tests</h3>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Topic</th>
+                        <th>Score</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for test in test_sessions %}
+                        <tr>
+                            <td>{{ test.subtopic.name }}</td>
+                            <td>
+                                {% if test.completed %}
+                                    {{ test.score|floatformat:1 }}%
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>{{ test.started_at|date:"M d, Y" }}</td>
+                            <td>
+                                {% if test.completed %}
+                                    <span class="badge bg-success">Completed</span>
+                                {% else %}
+                                    <span class="badge bg-warning">In Progress</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if test.completed %}
+                                    <a href="{% url 'tests:results' test.id %}" 
+                                       class="btn btn-sm btn-info">
+                                        View Results
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'tests:take' test.id %}" 
+                                       class="btn btn-sm btn-primary">
+                                        Continue Test
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">
+                                No tests taken yet. <a href="{% url 'topics:list' %}">Start a test</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %} 

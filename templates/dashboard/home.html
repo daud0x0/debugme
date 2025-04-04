@@ -1,0 +1,135 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Dashboard - DebugMe{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <div class="row">
+        <!-- Progress Overview -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Your Progress</h4>
+                </div>
+                <div class="card-body">
+                    {% for topic in topic_progress %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>{{ topic.topic.name }}</span>
+                                <span>{{ topic.completed }}/{{ topic.total }} completed</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {{ topic.progress }}%"
+                                     aria-valuenow="{{ topic.progress }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    {{ topic.progress|floatformat:0 }}%
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Quick Stats</h4>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Level:</span>
+                        <span class="badge bg-primary">{{ user.level }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Total Score:</span>
+                        <span>{{ user.total_score }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Tests Taken:</span>
+                        <span>{{ recent_tests|length }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weak Areas -->
+            <div class="card">
+                <div class="card-header">
+                    <h4>Areas to Improve</h4>
+                </div>
+                <div class="card-body">
+                    {% for area in weak_areas %}
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span>{{ area.subtopic.name }}</span>
+                                <span class="text-danger">{{ area.score_avg|floatformat:1 }}%</span>
+                            </div>
+                            <div class="progress" style="height: 5px;">
+                                <div class="progress-bar bg-danger" role="progressbar" 
+                                     style="width: {{ area.score_avg }}%"
+                                     aria-valuenow="{{ area.score_avg }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Tests -->
+    <div class="card">
+        <div class="card-header">
+            <h4>Recent Tests</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Topic</th>
+                            <th>Score</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for test in recent_tests %}
+                            <tr>
+                                <td>{{ test.subtopic.name }}</td>
+                                <td>{{ test.score }}%</td>
+                                <td>{{ test.started_at|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if test.completed %}
+                                        <span class="badge bg-success">Completed</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">In Progress</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">No tests taken yet.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="text-center">
+        <h2>Welcome to DebugMe</h2>
+        <p class="lead">Your AI-powered programming knowledge assessment platform</p>
+        <div class="mt-4">
+            <a href="{% url 'accounts:login' %}" class="btn btn-primary me-2">Login</a>
+            <a href="{% url 'accounts:signup' %}" class="btn btn-outline-primary">Sign Up</a>
+        </div>
+    </div>
+{% endif %}
+{% endblock %} 

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+{% load test_filters %}
+
+{% block title %}Topics{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <header>
+        <h1 class="text-3xl font-bold text-gray-900">Topics</h1>
+        <p class="mt-2 text-gray-600">Choose a topic to start learning and test your knowledge.</p>
+    </header>
+
+    {% if topics %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for topic in topics %}
+                <div class="card p-6 space-y-4" style="animation-delay: {% widthratio forloop.counter 1 0.1 %}s">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900">{{ topic.name }}</h3>
+                            <p class="mt-1 text-gray-600">{{ topic.description }}</p>
+                        </div>
+                        <div class="text-brand-600">
+                            <i class="fas fa-book text-2xl"></i>
+                        </div>
+                    </div>
+
+                    {% if topic.subtopics.all %}
+                        <div class="space-y-2">
+                            <h4 class="text-sm font-medium text-gray-700">Subtopics:</h4>
+                            <ul class="space-y-2">
+                                {% for subtopic in topic.subtopics.all %}
+                                    <li>
+                                        <a href="{% url 'topics:subtopic' subtopic.id %}" class="flex items-center justify-between group">
+                                            <span class="text-sm text-gray-600 group-hover:text-brand-600">{{ subtopic.name }}</span>
+                                            {% with score=subtopic.get_user_score %}
+                                                {% if score %}
+                                                    <span class="px-2 py-1 text-xs font-medium rounded-full 
+                                                        {% if score >= 80 %}bg-green-100 text-green-800
+                                                        {% elif score >= 60 %}bg-yellow-100 text-yellow-800
+                                                        {% else %}bg-red-100 text-red-800{% endif %}">
+                                                        {{ score }}%
+                                                    </span>
+                                                {% endif %}
+                                            {% endwith %}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-12">
+            <div class="text-gray-400">
+                <i class="fas fa-book-open text-6xl"></i>
+            </div>
+            <h3 class="mt-4 text-lg font-medium text-gray-900">No topics available</h3>
+            <p class="mt-2 text-gray-600">Check back later for new topics.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

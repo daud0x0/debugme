@@ -1,0 +1,22 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Error - DebugMe{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header bg-danger text-white">
+        <h3>Error</h3>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-danger">
+            <h4 class="alert-heading">Oops! Something went wrong</h4>
+            <p>{{ message }}</p>
+        </div>
+        
+        <div class="d-grid gap-2">
+            <a href="{% url 'topics:list' %}" class="btn btn-primary">Back to Topics</a>
+            <a href="{% url 'tests:list' %}" class="btn btn-outline-primary">View My Tests</a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

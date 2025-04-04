@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign In - DebugMe{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="text-2xl font-bold text-center mb-6">Welcome Back</h2>
+            
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    Please check your username and password and try again.
+                </div>
+                {% endif %}
+                
+                <div class="form-group">
+                    <label for="id_username" class="form-label">Username</label>
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" name="username" id="id_username" class="form-input pl-10" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_password" class="form-label">Password</label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="password" name="password" id="id_password" class="form-input pl-10" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary w-full">
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center text-sm text-gray-600">
+                Don't have an account? 
+                <a href="{% url 'register' %}" class="text-brand-600 hover:text-brand-500">Sign up</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
