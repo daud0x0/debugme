@@ -23,7 +23,7 @@ def generate_questions(subtopic: str, difficulty_level: int = 1, num_questions: 
         genai.configure(api_key="AIzaSyBHsQiaVTGtu6YFQFXxdu08my5QuKUK6yQ")
         
         # Create a model instance
-        model = genai.GenerativeModel('models/gemini-1.5-pro-latest')
+        model = genai.GenerativeModel('gemini-pro')
         
         # Create a detailed prompt for better question generation
         prompt = f"""
