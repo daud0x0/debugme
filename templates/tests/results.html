@@ -5,141 +5,123 @@
 {% block title %}Test Results{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <!-- Summary Card -->
-    <div class="card mb-8 animate-fade-in">
-        <div class="card-body">
-            <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ test_session.subtopic.name }}</h1>
-            <p class="text-gray-600">Completed on {{ test_session.completed_at|date:"F j, Y" }}</p>
-        </div>
-    </div>
+<div class="space-y-8">
+    <header>
+        <h1 class="text-3xl font-bold text-gray-900">Test Results</h1>
+        <p class="mt-2 text-gray-600">Here's how you performed on the test.</p>
+    </header>
 
     <!-- Performance Stats -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <!-- Total Questions -->
-        <div class="stats-card card animate-slide-up" style="animation-delay: 0.1s">
-            <div class="text-brand-600">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                </svg>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="card p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Total Questions</p>
+                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ test_session.questions.all|length }}</p>
+                </div>
+                <div class="text-brand-600">
+                    <i class="fas fa-list-ol text-2xl"></i>
+                </div>
             </div>
-            <div class="stats-number">{{ test_session.questions.count }}</div>
-            <div class="stats-label">Total Questions</div>
         </div>
 
-        <!-- Correct Answers -->
-        <div class="stats-card card animate-slide-up" style="animation-delay: 0.2s">
-            <div class="text-green-600">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+        <div class="card p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Correct Answers</p>
+                    <p class="mt-2 text-3xl font-bold text-green-600">{{ test_session.questions.all|filter_correct|length }}</p>
+                </div>
+                <div class="text-green-600">
+                    <i class="fas fa-check-circle text-2xl"></i>
+                </div>
             </div>
-            <div class="stats-number">{{ test_session.questions|filter_correct|length }}</div>
-            <div class="stats-label">Correct Answers</div>
         </div>
 
-        <!-- Incorrect Answers -->
-        <div class="stats-card card animate-slide-up" style="animation-delay: 0.3s">
-            <div class="text-red-600">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+        <div class="card p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Incorrect Answers</p>
+                    <p class="mt-2 text-3xl font-bold text-red-600">{{ test_session.questions.all|filter_incorrect|length }}</p>
+                </div>
+                <div class="text-red-600">
+                    <i class="fas fa-times-circle text-2xl"></i>
+                </div>
             </div>
-            <div class="stats-number">{{ test_session.questions|filter_incorrect|length }}</div>
-            <div class="stats-label">Incorrect Answers</div>
         </div>
 
-        <!-- Time Taken -->
-        <div class="stats-card card animate-slide-up" style="animation-delay: 0.4s">
-            <div class="text-yellow-600">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+        <div class="card p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Time Taken</p>
+                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ test_session.time_taken }}</p>
+                </div>
+                <div class="text-brand-600">
+                    <i class="fas fa-clock text-2xl"></i>
+                </div>
             </div>
-            <div class="stats-number">{{ test_session.time_taken }}</div>
-            <div class="stats-label">Time Taken</div>
         </div>
     </div>
 
-    <!-- Review Section -->
-    <div class="card animate-fade-in">
-        <div class="card-body">
-            <h2 class="text-xl font-bold text-gray-900 mb-6">Question Review</h2>
-            
-            {% for question in test_session.questions.all %}
-                <div class="mb-8 pb-8 border-b border-gray-200 last:border-0">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0 mr-4">
-                            {% if question.is_correct %}
-                                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                </span>
-                            {% else %}
-                                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                </span>
-                            {% endif %}
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="text-lg font-medium text-gray-900 mb-2">{{ question.text }}</h3>
-                            
-                            <div class="mb-4">
-                                <div class="text-sm font-medium text-gray-500 mb-1">Your Answer:</div>
-                                <div class="text-gray-900">{{ question.selected_answer }}</div>
-                            </div>
-                            
-                            {% if not question.is_correct %}
-                                <div class="mb-4">
-                                    <div class="text-sm font-medium text-gray-500 mb-1">Correct Answer:</div>
-                                    <div class="text-gray-900">{{ question.correct_answer }}</div>
-                                </div>
-                                
-                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
-                                    <div class="flex">
-                                        <div class="flex-shrink-0">
-                                            <svg class="h-5 w-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                        </div>
-                                        <div class="ml-3">
-                                            <p class="text-sm text-yellow-700">{{ question.explanation }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endif %}
-                        </div>
+    <!-- Questions Review -->
+    <div class="space-y-6">
+        <h2 class="text-2xl font-bold text-gray-900">Review</h2>
+        
+        {% for question in test_session.questions.all %}
+            <div class="card p-6 space-y-4">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold text-gray-900">Question {{ forloop.counter }}</h3>
+                        <p class="mt-2 text-gray-600">{{ question.text }}</p>
+                    </div>
+                    <div class="ml-4">
+                        {% if question.is_correct %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                <i class="fas fa-check mr-1"></i> Correct
+                            </span>
+                        {% else %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                                <i class="fas fa-times mr-1"></i> Incorrect
+                            </span>
+                        {% endif %}
                     </div>
                 </div>
-            {% endfor %}
-        </div>
+
+                <div class="space-y-2">
+                    <p class="text-sm font-medium text-gray-700">Your answer:</p>
+                    <p class="text-gray-600">{{ question.user_answer }}</p>
+
+                    {% if not question.is_correct %}
+                        <p class="text-sm font-medium text-gray-700 mt-4">Correct answer:</p>
+                        <p class="text-gray-600">{{ question.correct_answer }}</p>
+
+                        {% if question.explanation %}
+                            <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+                                <p class="text-sm font-medium text-blue-800">Explanation:</p>
+                                <p class="mt-1 text-sm text-blue-600">{{ question.explanation }}</p>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
     </div>
 
     <!-- Action Buttons -->
-    <div class="flex justify-between mt-8">
-        <a href="{% url 'topics:list' %}" class="btn-secondary">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-            Back to Topics
-        </a>
-        <div class="flex space-x-4">
+    <div class="flex items-center justify-between pt-6">
+        <div class="space-x-4">
+            <a href="{% url 'topics:list' %}" class="btn-secondary">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Topics
+            </a>
             <a href="{% url 'tests:analytics' %}" class="btn-secondary">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                </svg>
+                <i class="fas fa-chart-line mr-2"></i>
                 View Analytics
             </a>
-            <a href="{% url 'topics:start_test' test_session.subtopic.id %}" class="btn-primary">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                </svg>
-                Retake Test
-            </a>
         </div>
+        <a href="{% url 'topics:start_test' test_session.subtopic.id %}" class="btn-primary">
+            <i class="fas fa-redo mr-2"></i>
+            Retake Test
+        </a>
     </div>
 </div>
 {% endblock %} 
